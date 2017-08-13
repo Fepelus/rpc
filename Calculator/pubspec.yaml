@@ -1,0 +1,10 @@
+name: calculator
+version: 1.0.0
+description: A reverse-Polish calculator
+
+dependencies:
+    built_collection: "1.4.0"
+
+dev_dependencies:
+    test: "0.12.20+10"
+    logging: "0.11.3+1"
