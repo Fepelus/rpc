@@ -174,7 +174,7 @@ class StackDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new Text(this.data, style: new TextStyle(fontSize: 20.0));
+    return new Text(this.data, style: new TextStyle(fontSize: 24.0));
   }
 }
 
