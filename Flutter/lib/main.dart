@@ -146,16 +146,15 @@ class CalcKey extends AbCalcKey {
         flex: this.flex,
         child: new Container(
             decoration: new BoxDecoration(
-              color: Colors.indigo,
-
               border: new Border.all(
-                color: Colors.grey,
-                width: 1.0,
+                color: Colors.white,
+                width: 3.0,
               ),
             ),
-            constraints: new BoxConstraints(minHeight: 48.0),
-            child: new InkWell(
-              onTap: _onTap,
+            constraints: new BoxConstraints(minHeight: 56.0),
+            child: new RaisedButton(
+              color: Colors.indigo,
+              onPressed: _onTap,
                 child: new Center(
                     child: new Text(text,
                         style: new TextStyle(
@@ -266,7 +265,7 @@ class KeypadWidget extends StatelessWidget {
         padding: const EdgeInsets.all(12.0),
         child: new Column(
             mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
               new Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
                 keypadWidgets.undoButton,
