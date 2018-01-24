@@ -12,7 +12,7 @@ void main() {
 CalculatorIsolate calculatorIsolate;
 
 class CalculatorIsolate {
-  List<calc.StateListener> listeners = new List<calc.StateListener>();
+  List<calc.StateListener> listeners = <calc.StateListener>[];
   iso.SendPort sendPort;
   void connect() {
     final iso.ReceivePort receivePort = new iso.ReceivePort();
@@ -28,7 +28,6 @@ class CalculatorIsolate {
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
-  @override
   Widget build(BuildContext context) {
     return new MaterialApp(
       title: 'RPC',
@@ -106,7 +105,6 @@ abstract class AbCalcKey extends StatelessWidget {
     }
   }
 
-  @override
   Widget build(BuildContext context);
 }
 
@@ -119,11 +117,11 @@ class RaisedButtonCalcKey extends AbCalcKey {
   Widget build(BuildContext context) {
     final Orientation orientation = MediaQuery.of(context).orientation;
     return new Flexible(
-        flex: this.flex,
+        flex: flex,
         child: new Container(
             constraints: new BoxConstraints(minHeight: 48.0),
             child: new Padding(
-                padding: new EdgeInsets.only(right: this.padding),
+                padding: new EdgeInsets.only(right: padding),
                 child: new RaisedButton(
                     onPressed: _onTap,
                     child: new Center(
@@ -143,7 +141,7 @@ class CalcKey extends AbCalcKey {
   @override
   Widget build(BuildContext context) {
     return new Flexible(
-        flex: this.flex,
+        flex: flex,
         child: new Container(
             decoration: new BoxDecoration(
               border: new Border.all(
@@ -172,9 +170,8 @@ class StackDisplay extends StatelessWidget {
   String data;
   StackDisplay(this.data) : super();
 
-  @override
   Widget build(BuildContext context) {
-    return new Text(this.data, style: new TextStyle(fontSize: 24.0));
+    return new Text(data, style: new TextStyle(fontSize: 24.0));
   }
 }
 
@@ -221,7 +218,6 @@ class StackWidgets implements calc.StateListener {
 class StackWidget extends StatefulWidget implements calc.StateListener {
   StackState currentStackState;
   StackWidgets stackWidgets = new StackWidgets();
-  @override
   State<StatefulWidget> createState() {
     currentStackState = new StackState(stackWidgets);
     return currentStackState;
@@ -239,7 +235,6 @@ class StackState extends State<StackWidget> implements calc.StateListener {
   StackWidgets stackWidgets;
   StackState(this.stackWidgets) : super();
 
-  @override
   Widget build(BuildContext context) {
     stackWidgets.buildWidgets();
     return new Container(
@@ -259,7 +254,6 @@ class KeypadWidget extends StatelessWidget {
 
   KeypadWidget(this.keypadWidgets) : super();
 
-  @override
   Widget build(BuildContext context) {
     return new Container(
         padding: const EdgeInsets.all(12.0),
@@ -324,7 +318,6 @@ class CalculatorPage extends StatelessWidget {
     calculatorIsolate.listeners.add(stackWidget);
   }
 
-  @override
   Widget build(BuildContext context) {
     return new Scaffold(
         appBar: new AppBar(title: new Text(title)),

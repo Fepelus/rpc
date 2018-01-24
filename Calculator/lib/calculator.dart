@@ -28,9 +28,9 @@ abstract class StateListener {
 }
 
 class CalculatorState {
-  @override List<double> stack;
-  @override bool isSandpit;
-  @override String sandpit;
+  List<double> stack;
+  bool isSandpit;
+  String sandpit;
 
   CalculatorState(this.stack, this.isSandpit, this.sandpit);
 }

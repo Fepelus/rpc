@@ -1,8 +1,11 @@
 # RPC
 
-A new flutter project.
+Reverse-Polish calculator
 
-## Getting Started
+## Modules
 
-For help getting started with Flutter, view our online
-[documentation](http://flutter.io/).
+This project consists of three modules:
+
+* The *Calculator* library that maintains the stack of the current calculation and the operations on it.
+* A *CLI* that parses calculations from the command line and sends them to the library
+* A *Flutter* mobile application that operates as the GUI for the library.

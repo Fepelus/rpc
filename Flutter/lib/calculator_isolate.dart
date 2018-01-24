@@ -1,6 +1,6 @@
 
-import 'package:calculator/calculator.dart' as calc;
 import 'dart:isolate' as iso;
+import 'package:calculator/calculator.dart' as calc;
 
 void isomain(iso.SendPort sendPort) {
   final iso.ReceivePort receivePort = new iso.ReceivePort();
@@ -47,12 +47,12 @@ class TranslatedCommand {
   };
   final String command;
   TranslatedCommand(this.command) {
-    if (!parseMap.containsKey(this.command)) {
+    if (!parseMap.containsKey(command)) {
       throw "parseMap does not contain $command";
     }
   }
   void call(calc.Calculator calculator) {
-    parseMap[this.command](calculator);
+    parseMap[command](calculator);
   }
 }
 

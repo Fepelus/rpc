@@ -10,6 +10,7 @@ main() {
     test('the interface', () {
       TestBoundary listener = new TestBoundary();
       c.Calculator calc = new c.StackCalculator(listener);
+	  expect(calc, isNotNull);
     });
   });
 

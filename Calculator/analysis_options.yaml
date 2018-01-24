@@ -1,0 +1,10 @@
+
+linter:
+    rules:
+        - annotate_overrides
+        - camel_case_types
+        - constant_identifier_names
+        - non_constant_identifier_names
+        - library_names
+        - library_prefixes
+        - package_names
