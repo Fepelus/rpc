@@ -1,49 +1,19 @@
-import 'dart:isolate' as iso;
 import 'package:flutter/material.dart';
 import 'package:calculator/calculator.dart' as calc;
-import './calculator_isolate.dart';
 
 void main() {
-  calculatorIsolate = new CalculatorIsolate();
-  calculatorIsolate.connect();
   runApp(new MyApp());
 }
 
-CalculatorIsolate calculatorIsolate;
-
-class CalculatorIsolate {
-  List<calc.StateListener> listeners = <calc.StateListener>[];
-  iso.SendPort sendPort;
-  void connect() {
-    final iso.ReceivePort receivePort = new iso.ReceivePort();
-    iso.Isolate.spawn(isomain, receivePort.sendPort).then<iso.Isolate>((_) {
-      receivePort.listen((dynamic msg) =>
-          (msg is iso.SendPort) ? sendPort = msg : notify(msg));
-    });
-  }
-
-  void notify(calc.CalculatorState data) => listeners
-      .forEach((calc.StateListener l) => l.update(data));
-}
+calc.Calculator calculator;
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
-  Widget build(BuildContext context) {
+  @override Widget build(BuildContext context) {
     return new MaterialApp(
       title: 'RPC',
-      theme: new ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see
-        // the application has a blue toolbar. Then, without quitting
-        // the app, try changing the primarySwatch below to Colors.green
-        // and then invoke "hot reload" (press "r" in the console where
-        // you ran "flutter run", or press Run > Hot Reload App in IntelliJ).
-        // Notice that the counter didn't reset back to zero -- the application
-        // is not restarted.
-        primarySwatch: Colors.indigo,
-      ),
-      home: new CalculatorPage(title: 'Calculator'),
+      theme: new ThemeData(primarySwatch: Colors.indigo),
+      home: new CalculatorPage(title: 'Calculator', stackWidget: new StackWidget())
     );
   }
 }
@@ -67,24 +37,22 @@ class KeypadWidgets {
     buildButtons();
   }
 
-  void send(String command) => calculatorIsolate.sendPort.send(command);
-
   void buildButtons() {
-    undoButton = new CalcKey('Undo', () => send('UNDO'));
-    redoButton = new CalcKey('Redo', () => send('REDO'));
-    swapButton = new CalcKey('Swap', () => send('SWAP'));
-    powButton = new CalcKey('x\u207F', () => send('POWER'));
-    deleteButton = new CalcKey('Delete', () => send('DELETE'), flex: 2);
-    plusMinusButton = new CalcKey('+/-', () => send('PLUSMINUS'));
-    divideButton = new CalcKey('\u00F7', () => send('DIVIDE'));
-    multiplyButton = new CalcKey('\u00D7', () => send('MULTIPLY'));
-    plusButton = new CalcKey('+', () => send('ADD'));
-    minusButton = new CalcKey('-', () => send('SUBTRACT'));
-    enterButton = new CalcKey('Enter', () => send('ENTER'), flex: 2);
-    decimalPointButton = new CalcKey('.', () => send('DECIMALPOINT'));
+    undoButton = new CalcKey('Undo', () => calculator.undo());
+    redoButton = new CalcKey('Redo', () => calculator.redo());
+    swapButton = new CalcKey('Swap', () => calculator.swap());
+    powButton = new CalcKey('x\u207F', () => calculator.power());
+    deleteButton = new CalcKey('Delete', () => calculator.delete(), flex: 2);
+    plusMinusButton = new CalcKey('+/-', () => calculator.plusMinus());
+    divideButton = new CalcKey('\u00F7', () => calculator.divide());
+    multiplyButton = new CalcKey('\u00D7', () => calculator.multiply());
+    plusButton = new CalcKey('+', () => calculator.add());
+    minusButton = new CalcKey('-', () => calculator.subtract());
+    enterButton = new CalcKey('Enter', () => calculator.enter(), flex: 2);
+    decimalPointButton = new CalcKey('.', () => calculator.decimalPoint());
     digitWidgets = new List<CalcKey>(10);
     for (int i = 0; i < 10; i++) {
-      digitWidgets[i] = new CalcKey(i.toString(), () => send('DIGIT$i'));
+      digitWidgets[i] = new CalcKey(i.toString(), () => calculator.digit(i));
     }
   }
 }
@@ -105,7 +73,7 @@ abstract class AbCalcKey extends StatelessWidget {
     }
   }
 
-  Widget build(BuildContext context);
+  @override Widget build(BuildContext context);
 }
 
 class RaisedButtonCalcKey extends AbCalcKey {
@@ -119,7 +87,7 @@ class RaisedButtonCalcKey extends AbCalcKey {
     return new Flexible(
         flex: flex,
         child: new Container(
-            constraints: new BoxConstraints(minHeight: 48.0),
+            constraints: const BoxConstraints(minHeight: 48.0),
             child: new Padding(
                 padding: new EdgeInsets.only(right: padding),
                 child: new RaisedButton(
@@ -149,13 +117,13 @@ class CalcKey extends AbCalcKey {
                 width: 3.0,
               ),
             ),
-            constraints: new BoxConstraints(minHeight: 56.0),
+            constraints: const BoxConstraints(minHeight: 56.0),
             child: new RaisedButton(
               color: Colors.indigo,
               onPressed: _onTap,
                 child: new Center(
                     child: new Text(text,
-                        style: new TextStyle(
+                        style: const TextStyle(
                             fontSize: 18.0, color: Colors.white
                         )
                     )
@@ -167,11 +135,11 @@ class CalcKey extends AbCalcKey {
 }
 
 class StackDisplay extends StatelessWidget {
-  String data;
+  final String data;
   StackDisplay(this.data) : super();
 
-  Widget build(BuildContext context) {
-    return new Text(data, style: new TextStyle(fontSize: 24.0));
+  @override Widget build(BuildContext context) {
+    return new Text(data, style: const TextStyle(fontSize: 22.0));
   }
 }
 
@@ -217,8 +185,8 @@ class StackWidgets implements calc.StateListener {
 
 class StackWidget extends StatefulWidget implements calc.StateListener {
   StackState currentStackState;
-  StackWidgets stackWidgets = new StackWidgets();
-  State<StatefulWidget> createState() {
+  final StackWidgets stackWidgets = new StackWidgets();
+  @override State<StatefulWidget> createState() {
     currentStackState = new StackState(stackWidgets);
     return currentStackState;
   }
@@ -235,7 +203,7 @@ class StackState extends State<StackWidget> implements calc.StateListener {
   StackWidgets stackWidgets;
   StackState(this.stackWidgets) : super();
 
-  Widget build(BuildContext context) {
+  @override Widget build(BuildContext context) {
     stackWidgets.buildWidgets();
     return new Container(
         padding: const EdgeInsets.all(12.0),
@@ -250,11 +218,11 @@ class StackState extends State<StackWidget> implements calc.StateListener {
 }
 
 class KeypadWidget extends StatelessWidget {
-  KeypadWidgets keypadWidgets;
+  final KeypadWidgets keypadWidgets;
 
   KeypadWidget(this.keypadWidgets) : super();
 
-  Widget build(BuildContext context) {
+  @override Widget build(BuildContext context) {
     return new Container(
         padding: const EdgeInsets.all(12.0),
         child: new Column(
@@ -303,22 +271,18 @@ class KeypadWidget extends StatelessWidget {
 }
 
 class CalculatorPage extends StatelessWidget {
-  CalculatorPage({Key key, this.title}) : super(key: key) {
+  CalculatorPage({Key key, this.title, this.stackWidget}) : super(key: key) {
     buildCalculator();
   }
 
   final String title;
-
-  StackWidget stackWidget;
-  KeypadWidgets keypadWidgets;
-  calc.Calculator calculator;
+  final StackWidget stackWidget;
 
   void buildCalculator() {
-    stackWidget = new StackWidget();
-    calculatorIsolate.listeners.add(stackWidget);
+    calculator = new calc.StackCalculator(stackWidget);
   }
 
-  Widget build(BuildContext context) {
+  @override Widget build(BuildContext context) {
     return new Scaffold(
         appBar: new AppBar(title: new Text(title)),
         body: new Center(

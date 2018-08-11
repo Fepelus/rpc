@@ -5,14 +5,10 @@ import 'package:test/test.dart';
 void parser_tests() {
   group('When I instantiate a parser', () {
     var parser;
-    group('and give the constructor no arguments', () =>
-      test('then an exception is thrown', () =>
-        expect(() => parser = new cli.CliParser(), throwsA(isNoSuchMethodError)))
-    );
     group('and give the constructor a string argument', () {
       setUp(() => parser = new cli.CliParser('a string'));
       test('then the parser is correctly constructed',
-          () => expect(parser, new isInstanceOf<cli.Parser>()));
+          () => expect(parser, const TypeMatcher<cli.Parser>()));
     });
   });
 

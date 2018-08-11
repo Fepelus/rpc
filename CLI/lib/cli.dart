@@ -44,6 +44,9 @@ abstract class OperatorToken implements Token {
   Token innerToken;
   OperatorToken(this.innerToken);
   get value => innerToken.value;
+  set value(String in_value) => innerToken.value = in_value;
+  get type => innerToken.type;
+  set type(TokenType in_type) => innerToken.type = in_type;
 }
 
 class NumberToken extends OperatorToken {

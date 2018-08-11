@@ -1,13 +1,16 @@
 name: rpccli
 description: A command-line interface for my RPN calculator library.
-version: 1.0.0
+version: 2.0.0
 
 #dependencies:
 #  path: ^1.4.1
 
+environment:
+    sdk: ">=2.0.0 <3.0.0"
+
 dependencies:
   calculator:
-    path: /Users/paddy/Dropbox/src/dart/RPC/Calculator
+    path: ../Calculator
 
 dev_dependencies:
-    test: "0.12.20+10"
+    test: "1.3.0"
