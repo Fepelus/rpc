@@ -2,9 +2,12 @@ name: calculator
 version: 2.0.0
 description: A reverse-Polish calculator
 
+environment:
+    sdk: ">=2.2.0 <3.0.0"
+
 dependencies:
-    built_collection: "3.1.3"
+    built_collection: "4.1.0"
 
 dev_dependencies:
     logging: "0.11.3+2"
-    test: "1.3.0"
+    test: "1.5.3"
